@@ -1,0 +1,10 @@
+{
+  "logging": {
+    "level": "debug"
+  },
+  "database": {
+    "debug": true
+    // "password": "{username}",
+    // "username": "{password}"
+  }
+}

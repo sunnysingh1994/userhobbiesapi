@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "**/config/*.json": "jsonc"
+    },
+    "workbench.editor.showTabs": true,
+    "workbench.editor.enablePreview": false
+}

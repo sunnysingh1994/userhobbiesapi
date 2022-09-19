@@ -1,0 +1,408 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "User Hobbies",
+    "description": "An simple RESTful API that provides the required endpoints to create, list and delete users and their hobbies."
+  },
+  "host": "localhost:3000",
+  "schemes": [
+    "http"
+  ],
+  "basePath": "/api/v1",
+  "tags": [
+    {
+      "name": "Users",
+      "description": "Users' endpoints"
+    },
+    {
+      "name": "Hobbies",
+      "description": "Users' hobbies endpoints"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "definitions": {
+    "Hobby": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "passionLevel",
+        "year"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "passionLevel": {
+          "type": "string"
+        },
+        "year": {
+          "type": "string"
+        }
+      }
+    },
+    "UserPayload": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The user's name"
+        }
+      }
+    },
+    "HobbyPayload": {
+      "type": "object",
+      "required": [
+        "name",
+        "passionLevel",
+        "year"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "passionLevel": {
+          "type": "string",
+          "enum": [
+            "Low",
+            "Medium",
+            "High",
+            "Very-High"
+          ]
+        },
+        "year": {
+          "type": "string"
+        }
+      }
+    },
+    "UserResponse": {
+      "type": "object",
+      "required": [
+        "name",
+        "id",
+        "hobbies"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "hobbies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Hobby"
+          }
+        }
+      }
+    },
+    "HobbyResponse": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "passionLevel",
+        "year"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "passionLevel": {
+          "type": "string"
+        },
+        "year": {
+          "type": "string"
+        },
+        "user": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "ArrayOfUsers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/UserResponse"
+      }
+    },
+    "ArrayOfHobbies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/HobbyResponse"
+      }
+    }
+  },
+  "paths": {
+    "/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Fetch all users along with their hobbies",
+        "responses": {
+          "200": {
+            "description": "A list of users along with their hobbies",
+            "schema": {
+              "$ref": "#/definitions/ArrayOfUsers"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Create a new user",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "payload",
+            "description": "The user's information",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserPayload"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Returns the created user's id and name",
+            "schema": {
+              "type": "object",
+              "title": "User",
+              "required": [
+                "id",
+                "name"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create the user due to wrong sent data"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Deletes all the users along with their hobbies",
+        "responses": {
+          "200": {
+            "description": "Users and their hobbies deleted successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "deletedCount": {
+                  "type": "number",
+                  "description": "The number of deleted users"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{userId}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Retrieves a user along with its hobbies",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "The id of the user to retrieve",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return the user with the specified id along with its hobbies",
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Deletes a user along with its hobbies",
+        "parameters": [
+          {
+            "name": "userId",
+            "description": "The id of the user to delete",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User and its hobbies deleted successfully"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/users/{userId}/hobbies": {
+      "get": {
+        "tags": [
+          "Hobbies"
+        ],
+        "description": "Fetch all user's hobbies",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "The id of the user to retrieve its hobbies",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of user's hobbies",
+            "schema": {
+              "$ref": "#/definitions/ArrayOfHobbies"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Hobbies"
+        ],
+        "description": "Create a new hobby for the specified user",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "The id of the user to which the hobby belongs to",
+            "type": "string"
+          },
+          {
+            "name": "payload",
+            "in": "body",
+            "description": "The hobby's information",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/HobbyPayload"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Returns the created user's hobby"
+          }
+        }
+      }
+    },
+    "/users/{userId}/hobbies/{hobbyId}": {
+      "get": {
+        "tags": [
+          "Hobbies"
+        ],
+        "description": "Retrieves the specified hobby",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "The id of the user to retrieve the specified hobby",
+            "type": "string"
+          },
+          {
+            "name": "hobbyId",
+            "in": "path",
+            "required": true,
+            "description": "The id of the hobby to retrieve",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return the user's hobby with the specified id"
+          },
+          "404": {
+            "description": "Hobby not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Hobbies"
+        ],
+        "description": "Deletes a user's hobby",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "The id of the user to delete the specified hobby",
+            "type": "string"
+          },
+          {
+            "name": "hobbyId",
+            "in": "path",
+            "required": true,
+            "description": "The id of the hobby to delete",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Hobby deleted successfully"
+          },
+          "404": {
+            "description": "Hobby not found"
+          }
+        }
+      }
+    }
+  }
+}
